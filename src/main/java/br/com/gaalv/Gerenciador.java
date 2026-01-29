@@ -262,4 +262,6 @@ public class Gerenciador {
 
     public void checkTarefa() {}
 
+    public void escolhaId () {}
+
 }
