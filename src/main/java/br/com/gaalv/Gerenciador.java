@@ -65,7 +65,7 @@ public class Gerenciador {
 
         EDIT(1, "Editar Tarefa"), REMOVE(2, "Remover Tarefa"),
         DELETE_ALL(3, "Excluir todas as Tarefas"),
-        CHECK(4, "Trocar Status Tarefa"), EXIT(5, "Sair");
+        CHECK(4, "Trocar Status Tarefa"), BACK(5, "Voltar");
 
         private final int id;
         private final String descricao;
@@ -175,10 +175,19 @@ public class Gerenciador {
 
     public void listTarefa() {
 
-        SUBMENU tarefaAtual;
         boolean noSub = true;
 
-        do {
+        SUBMENU tarefaAtual;
+
+        while (noSub) {
+
+            if(tarefas.isEmpty()) {
+
+                System.out.println("Não foi encontrada nenhuma tarefa.");
+                noSub = false;
+                continue;
+
+            }
 
             mostrarTarefa();
             SUBMENU.mostrarMenu();
@@ -207,13 +216,13 @@ public class Gerenciador {
 
                 case CHECK -> checkTarefa();
 
-                case EXIT -> {
+                case BACK -> {
 
                     System.out.println("Voltando ao Menu Principal...");
                     noSub = false;
                 }
             }
-        } while (noSub);
+        }
     }
 
     public void markTarefa() {
@@ -245,7 +254,43 @@ public class Gerenciador {
         }
     }
 
-    public void editTarefa() {}
+    public void editTarefa() {
+
+        Tarefa tarefaEditada = tarefas.get(escolhaId());
+
+        while (true) {
+
+            System.out.printf("Digite o titulo atualizado: (atual: %s) (Aperte ENTER caso queira manter o titulo antigo) (required)\n", tarefaEditada.getTitulo());
+            String inputTitulo = sc.nextLine();
+
+            if (inputTitulo.isEmpty()) {
+
+                System.out.println("Mantendo o titulo original...");
+                break;
+            }
+
+            String inputTituloTratado = inputTitulo.trim();
+            if (!inputTituloTratado.isBlank()) {
+
+                tarefaEditada.setTitulo(inputTituloTratado);
+                break;
+            } else System.out.println("Não pode titulo vazio.");
+        }
+
+        System.out.println("Agora, digite a descrição atualizada: (Aperte ENTER caso queira manter a descrição antiga)");
+        String inputDescricao = sc.nextLine();
+
+        if (inputDescricao.isEmpty()) {
+
+            System.out.println("Mantendo a descrição original...");
+        } else {
+
+            tarefaEditada.setDescricao(inputDescricao.trim());
+            System.out.println("Descrição Atualizada");
+        }
+
+        System.out.printf("Tarefa atualizada -> Titulo:    %s | Descrição:  %s\n", tarefaEditada.getTitulo(), tarefaEditada.getDescricao());
+    }
 
     public void removeTarefa() {}
 
@@ -256,12 +301,24 @@ public class Gerenciador {
             int excluidos = tarefas.size();
             tarefas.clear();
 
-            System.out.printf("✅ Foram excluídos %s tarefas.\n", excluidos);
+            System.out.printf("✅ Foram excluídas %s tarefas.\n", excluidos);
         } else System.out.println("❌ Operação Cancelada.");
     }
 
     public void checkTarefa() {}
 
-    public void escolhaId () {}
+    public int escolhaId () {
 
+        int input;
+        do {
+
+            System.out.println("Digite o n. da tarefa:");
+            input = lerInt();
+
+            if (input <= 0 || input > tarefas.size()) System.out.println("Número inválido! Tente algo entre 1 e " + tarefas.size());
+
+        } while (input <= 0 || input > tarefas.size());
+
+        return input - 1;
+    }
 }
