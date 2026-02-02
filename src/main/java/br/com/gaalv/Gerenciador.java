@@ -11,7 +11,7 @@
     public class Gerenciador {
 
         private final Scanner sc = new Scanner(System.in);
-        private final List<Tarefa> tarefas = new ArrayList<>();
+        private final TarefaRepository tr = new TarefaRepository();
         private static final String linha = "-------------------------";
 
         @AllArgsConstructor
@@ -105,7 +105,7 @@
                     System.out.println("Digite um número válido:");
                 }
             }
-        }
+        } //pronto
 
         public void start () {
 
@@ -159,12 +159,15 @@
             String inputDescricao = sc.nextLine().trim();
             if(inputDescricao.isBlank()) inputDescricao = "";
 
-            tarefas.add(Tarefa.builder()
+            Tarefa tarefa = Tarefa.builder()
                             .titulo(inputTitulo)
                             .descricao(inputDescricao)
-                    .build());
+                    .build();
+
+            tr.saveTarefa(tarefa);
+
             System.out.println("✅ Tarefa salva com sucesso!\n");
-        }
+        } //pronto
 
         public void listTarefa() {
 
@@ -222,11 +225,10 @@
 
             if(validarCtz()) {
 
-                tarefas.forEach(t -> t.setStatus(true));
-
+                tr.markTarefa();
                 System.out.println("✅ Todas as tarefas foram concluídas.\n");
             } else System.out.println("❌ Operação Cancelada.");
-        }
+        } //pronto
 
         public boolean validarCtz() {
 
@@ -234,18 +236,19 @@
             String input = sc.nextLine().trim().toLowerCase();
 
             return List.of("sim", "s", "y", "yes").contains(input);
-        }
+        } //pronto
 
         public void mostrarTarefa() {
 
-            System.out.printf("Foram encontrado(s) %d tarefa(s).\n", tarefas.size());
+            List<Tarefa> exibList = tr.findAll();
+            System.out.printf("Foram encontrado(s) %d tarefa(s).\n", tr.total());
 
             int cont = 1;
-            for (Tarefa t : tarefas) {
+            for (Tarefa t : exibList) {
 
                 System.out.printf("(%d) -   %s\n", cont++, t);
             }
-        }
+        } //pronto
 
         public void editTarefa() {
 
