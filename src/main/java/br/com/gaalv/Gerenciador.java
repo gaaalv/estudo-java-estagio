@@ -152,8 +152,8 @@
 
                 System.out.println("Digite o titulo da nova tarefa (Required)");
                 inputTitulo = sc.nextLine().trim();
-                if(inputTitulo.isBlank()) System.out.println("Digite um titulo válido!");
-            } while (inputTitulo.isBlank());
+                if(inputTitulo.isEmpty()) System.out.println("Digite um titulo válido!");
+            } while (inputTitulo.isEmpty());
 
             System.out.println("Digite a descrição da nova tarefa (Not Required)");
             String inputDescricao = sc.nextLine().trim();
